@@ -1,8 +1,8 @@
 
 <% if user_signed_in? %>
-<!-- blank for now -->
-<% else %>
+<h1>we are log</h1>><% else %>
 hello world
-<%= link_to "Sign up", new_user_registration_path %>
+<%= link_to "Sign up", new_user_registration_path, class: "btn btn-primary btn-lg" %>
+<%= link_to "Log in", new_user_session_path, class: "btn btn-outline-primary btn-lg" %>
 <% end %>
  
