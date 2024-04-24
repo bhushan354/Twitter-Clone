@@ -3,7 +3,7 @@ Rails.application.routes.draw do
 
   root "home#index"
 
-  resources :tweets, only: :create 
+  resources :tweets
   
   get :dashboard, to: "dashboard#index"
 

@@ -6,8 +6,16 @@ class UsernamesController < ApplicationController
     end
 
     def update
-        current_user.update(username_params)
+     if username_params[:username].present? && current_user.update(username_params)
         redirect_to dashboard_path 
+     else
+        flash.now[:alert] = if username_params[:username].blank?
+            "Username can't be blank"
+        else
+            current_user.errors.full_messages.join(", ")
+        end
+        redirect_to new_username_path
+     end
     end 
 
     private
