@@ -1,14 +1,14 @@
-<h1>Tweets</h1>
+<div class="container mt-5">
+  <h1 class="mb-4">Your Tweets</h1>
 
-
-
-<form id="new_tweet_form" class="mb-3">
-  <div class="form-group">
-    <label for="tweet_body">New Tweet:</label>
-    <input type="text" id="tweet_body" class="form-control" required>
-  </div>
-  <button type="submit" class="btn btn-primary">Add Tweet</button>
-</form>
+  <form id="new_tweet_form" class="mb-3">
+    <div class="input-group">
+      <input type="text" id="tweet_body" class="form-control" placeholder="What's happening?" aria-label="Tweet body" aria-describedby="add-tweet-btn" required>
+      <div class="input-group-append">
+        <button type="submit" class="btn btn-primary" id="add-tweet-btn">Tweet</button>
+      </div>
+    </div>
+  </form>  
 
 <ul id="tweets_list" class="list-group">
 

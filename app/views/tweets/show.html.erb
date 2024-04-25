@@ -1,14 +1,20 @@
-<h1>Tweet Details</h1>
-<div>
-  <strong>Body:</strong> <%= @tweet.body %>
-</div>
-<div>
-  <strong>Created At:</strong> <%= @tweet.created_at %>
-</div>
-<div>
-  <strong>Updated At:</strong> <%= @tweet.updated_at %>
-</div>
-<div>
-  <%= link_to 'Edit', edit_tweet_path(@tweet), class: 'btn btn-sm btn-secondary' %>
-  <%= link_to 'Back', tweets_path, class: 'btn btn-sm btn-light' %>
-</div>
+<div class="container mt-5">
+    <h1>Tweet Details</h1>
+  
+    <div class="card mt-3">
+      <div class="card-body">
+        <strong>Your Tweet:</strong>
+        <p><%= @tweet.body %></p>
+        <strong>Created At:</strong>
+        <p><%= @tweet.created_at %></p>
+        <strong>Updated At:</strong>
+        <p><%= @tweet.updated_at %></p>
+  
+        <div class="mt-3">
+          <%= link_to 'Edit', edit_tweet_path(@tweet), class: 'btn btn-sm btn-secondary' %>
+          <%= link_to 'Back', tweets_path, class: 'btn btn-sm btn-light' %>
+        </div>
+      </div>
+    </div>
+  </div>
+  
