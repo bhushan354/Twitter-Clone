@@ -28,7 +28,7 @@ class TweetsController < ApplicationController
     @tweet = current_user.tweets.find(params[:id])
 
     if @tweet.update(tweet_params)
-      render json: @tweet
+      redirect_to tweet_path(@tweet)
     else
       render json: @tweet.errors, status: :unprocessable_entity
     end
