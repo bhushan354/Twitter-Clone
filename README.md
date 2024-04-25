@@ -1,7 +1,7 @@
 # Twitter-clone
 
-## Presentation video: 
-
+## Presentation video link: 
+https://drive.google.com/file/d/1gbbhFzT4oi_WQbapySDbez22QxaxOpU6/view?usp=sharing
 
 ## Features
 
