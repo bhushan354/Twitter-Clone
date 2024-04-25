@@ -1,49 +1,46 @@
 class TweetsController < ApplicationController
   before_action :authenticate_user!
-  before_action :set_tweet, only: [:show, :edit, :update, :destroy]
 
   def index
-    @tweets = Tweet.all
-  end
-
-  def show
-  end
-
-  def new
-    @tweet = Tweet.new
-  end
-
-  def edit
+    @tweets = current_user.tweets.order(created_at: :desc)
   end
 
   def create
-    @tweet = Tweet.new(tweet_params.merge(user: current_user))
+    @tweet = current_user.tweets.new(tweet_params)
 
     if @tweet.save
-      redirect_to @tweet, notice: 'Tweet was successfully created.'
+      render json: @tweet, status: :created
     else
-      render :new, status: :unprocessable_entity
+      render json: @tweet.errors, status: :unprocessable_entity
     end
   end
 
+  def show 
+    @tweet = Tweet.find(params[:id])
+  end
+
+
+  def edit 
+    @tweet = Tweet.find(params[:id])
+  end 
+
   def update
+    @tweet = current_user.tweets.find(params[:id])
+
     if @tweet.update(tweet_params)
-      redirect_to @tweet, notice: 'Tweet was successfully updated.'
+      render json: @tweet
     else
-      render :edit, status: :unprocessable_entity
+      render json: @tweet.errors, status: :unprocessable_entity
     end
   end
 
   def destroy
+    @tweet = current_user.tweets.find(params[:id])
     @tweet.destroy
-    redirect_to tweets_url, notice: 'Tweet was successfully destroyed.'
+    head :no_content
   end
 
   private
-
-  def set_tweet
-    @tweet = Tweet.find(params[:id])
-  end
 
   def tweet_params
     params.require(:tweet).permit(:body)

@@ -1,0 +1,14 @@
+<h1>Tweet Details</h1>
+<div>
+  <strong>Body:</strong> <%= @tweet.body %>
+</div>
+<div>
+  <strong>Created At:</strong> <%= @tweet.created_at %>
+</div>
+<div>
+  <strong>Updated At:</strong> <%= @tweet.updated_at %>
+</div>
+<div>
+  <%= link_to 'Edit', edit_tweet_path(@tweet), class: 'btn btn-sm btn-secondary' %>
+  <%= link_to 'Back', tweets_path, class: 'btn btn-sm btn-light' %>
+</div>

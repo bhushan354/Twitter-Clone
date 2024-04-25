@@ -1,0 +1,67 @@
+<h1>Tweets</h1>
+
+<form id="new_tweet_form" class="mb-3">
+  <div class="form-group">
+    <label for="tweet_body">New Tweet:</label>
+    <input type="text" id="tweet_body" class="form-control" required>
+  </div>
+  <button type="submit" class="btn btn-primary">Add Tweet</button>
+</form>
+
+<ul id="tweets_list" class="list-group">
+
+</ul>
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    fetch('/tweets.json')
+      .then(response => response.json())
+      .then(data => {
+        const tweetsList = document.getElementById('tweets_list');
+        data.forEach(tweet => {
+          const tweetItem = createTweetElement(tweet);
+          tweetsList.appendChild(tweetItem);
+        });
+
+        tweetsList.addEventListener('click', (event) => {
+          if (event.target.classList.contains('delete-tweet')) {
+            const tweetId = event.target.dataset.tweetId;
+
+            fetch(`/tweets/${tweetId}`, {
+              method: 'DELETE',
+              headers: {
+                'X-CSRF-Token': document.querySelector('meta[name="csrf-token"]').content,
+              },
+            })
+              .then(response => {
+                if (response.ok) {
+
+                  const tweetItem = event.target.closest('.list-group-item');
+                  tweetItem.remove();
+                } else {
+                  console.error('Error deleting tweet:', response.status);
+                }
+              })
+              .catch(error => console.error('Error deleting tweet:', error));
+          }
+        });
+      })
+      .catch(error => console.error('Error fetching tweets:', error));
+  });
+
+
+  function createTweetElement(tweet) {
+    const tweetItem = document.createElement('li');
+    tweetItem.classList.add('list-group-item');
+    tweetItem.innerHTML = `
+      <div>${tweet.body}</div>
+      <div><strong>Created At:</strong> ${tweet.created_at}</div>
+      <div class="d-flex justify-content-between align-items-center mt-2">
+        <a href="/tweets/${tweet.id}" class="btn btn-sm btn-light">View</a>
+        <a href="/tweets/${tweet.id}/edit" class="btn btn-sm btn-secondary">Edit</a>
+        <button type="button" class="btn btn-sm btn-danger delete-tweet" data-tweet-id="${tweet.id}">Delete</button>
+      </div>
+    `;
+    return tweetItem;
+  }
+</script>
