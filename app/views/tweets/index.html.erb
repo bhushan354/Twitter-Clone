@@ -1,0 +1,94 @@
+<div class="container mt-5">
+  <h1 class="mb-4">Your Tweets</h1>
+
+  <form id="new_tweet_form" class="mb-3">
+    <div class="input-group">
+      <input type="text" id="tweet_body" class="form-control" placeholder="What's happening?" aria-label="Tweet body" aria-describedby="add-tweet-btn" required>
+      <div class="input-group-append">
+        <button type="submit" class="btn btn-primary" id="add-tweet-btn">Tweet</button>
+      </div>
+    </div>
+  </form>  
+
+<ul id="tweets_list" class="list-group">
+
+</ul>
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const newTweetForm = document.getElementById('new_tweet_form');
+    const tweetsList = document.getElementById('tweets_list');
+
+    newTweetForm.addEventListener('submit', (event) => {
+      event.preventDefault();
+
+      const tweetBody = document.getElementById('tweet_body').value;
+// post tweet call
+      fetch('/tweets', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-CSRF-Token': document.querySelector('meta[name="csrf-token"]').content,
+        },
+        body: JSON.stringify({ body: tweetBody }),
+      })
+        .then(response => response.json())
+        .then(newTweet => {
+
+          const tweetItem = createTweetElement(newTweet);
+          tweetsList.appendChild(tweetItem);
+
+          document.getElementById('tweet_body').value = '';
+        })
+        .catch(error => console.error('Error adding tweet:', error));
+    });
+
+    fetch('/tweets.json')
+      .then(response => response.json())
+      .then(data => {
+        data.forEach(tweet => {
+          const tweetItem = createTweetElement(tweet);
+          tweetsList.appendChild(tweetItem);
+        });
+
+        tweetsList.addEventListener('click', (event) => {
+          if (event.target.classList.contains('delete-tweet')) {
+            const tweetId = event.target.dataset.tweetId;
+
+       // delete method call
+            fetch(`/tweets/${tweetId}`, {
+              method: 'DELETE',
+              headers: {
+                'X-CSRF-Token': document.querySelector('meta[name="csrf-token"]').content,
+              },
+            })
+              .then(response => {
+                if (response.ok) {
+                  const tweetItem = event.target.closest('.list-group-item');
+                  tweetItem.remove();
+                } else {
+                  console.error('Error deleting tweet:', response.status);
+                }
+              })
+              .catch(error => console.error('Error deleting tweet:', error));
+          }
+        });
+      })
+      .catch(error => console.error('Error fetching tweets:', error));
+  });
+
+  function createTweetElement(tweet) {
+    const tweetItem = document.createElement('li');
+    tweetItem.classList.add('list-group-item');
+    tweetItem.innerHTML = `
+      <div>${tweet.body}</div>
+      <div><strong>Created At:</strong> ${tweet.created_at}</div>
+      <div class="d-flex justify-content-between align-items-center mt-2">
+        <a href="/tweets/${tweet.id}" class="btn btn-sm btn-light">View</a>
+        <a href="/tweets/${tweet.id}/edit" class="btn btn-sm btn-secondary">Edit</a>
+        <button type="button" class="btn btn-sm btn-danger delete-tweet" data-tweet-id="${tweet.id}">Delete</button>
+      </div>
+    `;
+    return tweetItem;
+  }
+</script>
