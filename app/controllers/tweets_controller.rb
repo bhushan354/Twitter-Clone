@@ -7,6 +7,7 @@ class TweetsController < ApplicationController
   end
 
   def show
+    
   end
 
   def new
@@ -19,10 +20,14 @@ class TweetsController < ApplicationController
   def create
     @tweet = Tweet.new(tweet_params.merge(user: current_user))
 
-    if @tweet.save
-      redirect_to @tweet, notice: 'Tweet was successfully created.'
-    else
-      render :new, status: :unprocessable_entity
+    respond_to do |format|
+      if @tweet.save
+        format.html { redirect_to dashboard_path, notice: 'Tweet was successfully created.' }
+        format.js
+      else
+        format.html { render :new, status: :unprocessable_entity }
+        format.js { render 'create_failure.js.erb' }
+      end
     end
   end
 
@@ -36,8 +41,12 @@ class TweetsController < ApplicationController
 
   def destroy
     @tweet.destroy
-    redirect_to tweets_url, notice: 'Tweet was successfully destroyed.'
+    respond_to do |format|
+      format.html { redirect_to dashboard_path, notice: 'Tweet was successfully deleted.' }
+      format.js
+    end
   end
+  
 
   private
 
